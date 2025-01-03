@@ -1,0 +1,19 @@
+# Binaries
+r2uploader
+r2uploader-*
+*.exe
+
+# Go specific
+*.test
+*.out
+go.work
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+Thumbs.db 

@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.20-alpine
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Install git (needed for checkout)
+      - name: Install dependencies
+        run: apk add --no-cache git
+
+      - name: Build binaries
+        run: |
+          # Windows
+          GOOS=windows GOARCH=amd64 go build -o r2uploader-windows-amd64.exe
+          
+          # Linux
+          GOOS=linux GOARCH=amd64 go build -o r2uploader-linux-amd64
+          
+          # macOS Intel
+          GOOS=darwin GOARCH=amd64 go build -o r2uploader-darwin-amd64
+          
+          # macOS M1
+          GOOS=darwin GOARCH=arm64 go build -o r2uploader-darwin-arm64
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            r2uploader-windows-amd64.exe
+            r2uploader-linux-amd64
+            r2uploader-darwin-amd64
+            r2uploader-darwin-arm64
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
